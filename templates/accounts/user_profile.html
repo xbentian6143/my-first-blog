@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="shadow p-3 mb-5 bg-light text-dark rounded" style="width: 100%;">
+    
+    <h4>ユーザー情報</h4>
+
+</div>
+<div class="ui segment">
+    <div class="content">
+    <div class="ui divided bulleted list">
+        {% if profile_user.icon %}
+            <img src="{{ profile_user.icon.url }}" class="user-icon">
+        {% else %}
+            <img src="{% static 'images/user_icon.png' %}" class="user-icon">
+        {% endif %}
+
+        <div class="item">ニックネーム：{% if profile_user.nickname %}{{profile_user.nickname}}{% else %}未設定{% endif %}</div>
+        <div class="item">自己紹介：{% if profile_user.introduction %}{{profile_user.introduction}}{% else %}未設定{% endif %}</div>
+        <div class="item">{{ profile_followees_count }}人をフォロー中</div>
+        <div class="item">{{ profile_followers_count }}人がフォロワー</div>
+
+        <div>
+            
+            <form method="POST" action="{% url 'accounts:follow' user_pk=profile_user.pk %}">
+                {% csrf_token %}
+                <button type = "submit"　class="btn btn-primary">フォロー</button>
+
+        </div>
+    </div>
+</div>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-link active" id="nav-post-tab" data-bs-toggle="tab" href="#nav-post" role="tab" aria-controls="nav-post" aria-selected="true">投稿</a>
+      <a class="nav-link" id="nav-idea-tab" data-bs-toggle="tab" href="#nav-idea" role="tab" aria-controls="nav-idea" aria-selected="false">アイディア</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-post" role="tabpanel" aria-labelledby="nav-post-tab">
+        {% for post in posts %}
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <a href="{% url 'post:post_detail' pk=post.pk %}" class="stretched-link"></a>
+                    <h5 class="card-content">{{ post.content|linebreaksbr }}</h5>
+                    <p class="card-detail">{{ post.detail|linebreaksbr }}</p>
+                    <p class="text-end">{{ post.published_date }}</p>
+                </div>
+          </div>         
+        {% endfor %}
+
+    </div>
+    <div class="tab-pane fade" id="nav-idea" role="tabpanel" aria-labelledby="nav-idea-tab">
+        {% for idea in ideas %}
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <a href="/" class="stretched-link"></a>
+                    <h5 class="card-content">{{ idea.content|linebreaksbr }}</h5>
+                    <p class="card-detail">{{ idea.detail|linebreaksbr }}</p>
+                    <p class="text-end">{{ idea.published_date }}</p>
+                </div>
+            </div>           
+        {% endfor %}
+    </div>
+</div>  
+
+{% endblock %}

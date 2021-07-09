@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  
+<div class="shadow p-3 mb-5 bg-light text-dark rounded" style="width: 100%;">
+    
+  <h4>アカウント新規作成</h4>
+
+</div>
+<div>
+
+ 
+    <form method="POST" action="{% url 'accounts:create_account' %}">
+      {% csrf_token %}
+      <label>メールアドレス</label>
+      {{ form.email }}
+      {{ form.email.errors }}
+      <label>パスワード</label>
+      {{ form.password1 }}
+      {{ form.password1.errors }}
+      <label>パスワード(確認)</label>
+      {{ form.password2 }}
+      {{ form.password2.errors }}
+      <button type = "submit" class="btn btn-primary">登録</button>
+    </form>
+
+  </div>
+{% endblock %}
