@@ -14,7 +14,16 @@ from pathlib import Path
 import django_heroku
 
 
+DEBUG = False
 
+try:
+    from config.local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
 
 
 AUTH_USER_MODEL='accounts.User'
@@ -89,8 +98,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'name',
+        'USER': 'user',
+        'PASSWORD': '',
+        'HOST': 'host',
+        'PORT': '',
     }
 }
 
@@ -158,13 +171,3 @@ EMAIL_USE_TLS = True
 django_heroku.settings(locals())
 
 
-DEBUG = False
-
-try:
-    from config.local_settings import *
-except ImportError:
-    pass
-
-if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
