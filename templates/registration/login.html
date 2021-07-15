@@ -3,20 +3,28 @@
 {% block title %}ログイン{% endblock %}
 
 {% block content %}
+
+<div class="shadow p-3 mb-5 bg-light text-dark rounded" style="width: 100%;">
+    
+  <h4>ログイン</h4>
+
+</div>
+
 <div>
-    {% if form.errors  %}
-    <p>メールアドレス, パスワードが一致しません．</p>
-    {% endif %}
-    <form method="POST" >
-      <!--form内のaction = "{% url 'accounts:login' %}"は消去-->
+   
+    <form class="w-50 mx-auto" th:action="@{/login}" method="post">
       {% csrf_token %}
-      <label>メールアドレス</label>
-      {{ form.username }}
-      {{ form.username.errors }}
-      <label>パスワード</label>
-      {{ form.password }}
-      {{ form.password.errors }}
-      <button type = "submit" class="btn btn-primary">ログイン</button>
-    </form>
+      <label for="email" class="sr-only"></label>
+
+      <input class="form-control" id="username"
+          type="text"　 style="width:100%;"  name="username" placeholder="メールアドレス" 
+          required autofocus/>
+      <label for="password" class="sr-only"></label>
+      <input class="form-control" id="password"
+          type="password" name="password" placeholder="パスワード" 
+          required/>
+      <input class="btn btn-primary my-1" type="submit" value="ログイン"/>
+ </form>
+ 
 </div>
 {% endblock %}

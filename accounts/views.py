@@ -9,6 +9,7 @@ from post.models import Post,Idea,Sympathy,Good
 from rest_framework import viewsets
 from django.views.generic import CreateView,View, TemplateView, DetailView, UpdateView, ListView
 from . forms import UserCreationForm,UserChangeForm,UserPasswordChangeForm
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -64,6 +65,12 @@ def user_profile(request,user_pk):
     #フォローワ―
     profile_followers = Connection.objects.filter(followed_target = profile_user )
     profile_followers_count = profile_followers.count()
+    good_list = Good.objects.filter(user = request.user )
+    good_idea_list = [good.target for good in good_list ]
+    sympathy_list = Sympathy.objects.filter(user = request.user)
+    sympathy_post_list = [sympathy.target for sympathy in sympathy_list]
+    print(user_pk)
+    print(profile_user)
 
     return TemplateResponse(request, 'accounts/user_profile.html',
         {'profile_user': profile_user,
@@ -73,6 +80,8 @@ def user_profile(request,user_pk):
         'profile_followers': profile_followers,
         'profile_followees_count': profile_followees_count,
         'profile_followers_count': profile_followers_count,
+        'good_idea_list':good_idea_list,
+        'sympathy_post_list':sympathy_post_list
          })
 
  
@@ -203,3 +212,27 @@ def change_password(request):
         "form": form,
     }
     return render(request, 'registration/password_change_form.html', context)
+
+
+class PasswordReset(PasswordResetView):
+    """パスワード変更用URLの送付ページ"""
+    subject_template_name = 'registration/mail_template/reset/subject.txt'
+    email_template_name = 'registration/mail_template/reset/message.txt'
+    template_name = 'registration/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+
+
+class PasswordResetDone(PasswordResetDoneView):
+    """パスワード変更用URLを送りましたページ"""
+    template_name = 'registration/password_reset_done.html'
+
+
+class PasswordResetConfirm(PasswordResetConfirmView):
+    """新パスワード入力ページ"""
+    success_url = reverse_lazy('accounts:password_reset_complete')
+    template_name = 'registration/password_reset_confirm.html'
+
+
+class PasswordResetComplete(PasswordResetCompleteView):
+    """新パスワード設定しましたページ"""
+    template_name = 'registration/password_reset_complete.html'
